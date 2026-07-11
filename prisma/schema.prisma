@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// building on top of the erd sketch
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  nameComponents NameComponent[]
+  identities     Identity[]
+  permissions    Permission[]
+  sessions       Session[]
+  auditLogs      AuditLog[]
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Context {
+  id          String @id @default(uuid())
+  name        String @unique
+  description String
+
+  identities  Identity[]
+  permissions Permission[]
+  auditLogs   AuditLog[]
+}
+
+enum ComponentType {
+  GIVEN
+  FAMILY
+  PATRONYMIC
+  MATRONYMIC
+  NICKNAME
+  HONORIFIC
+  GENERATIONAL
+  RELIGIOUS
+  OTHER
+}
+
+model NameComponent {
+  id     String        @id @default(uuid())
+  userId String
+  type   ComponentType
+  value  String
+  script String
+
+  user         User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  inIdentities IdentityNameComponent[]
+}
+
+model Identity {
+  id        String   @id @default(uuid())
+  userId    String
+  contextId String
+  label     String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user       User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  context    Context                 @relation(fields: [contextId], references: [id])
+  components IdentityNameComponent[]
+  auditLogs  AuditLog[]
+
+  @@unique([userId, contextId])
+}
+
+model IdentityNameComponent {
+  id              String @id @default(uuid())
+  identityId      String
+  nameComponentId String
+  position        Int
+
+  identity      Identity      @relation(fields: [identityId], references: [id], onDelete: Cascade)
+  nameComponent NameComponent @relation(fields: [nameComponentId], references: [id], onDelete: Cascade)
+
+  @@unique([identityId, position])
+  @@unique([identityId, nameComponentId])
+}
+
+enum RequesterType {
+  HOSPITAL
+  UNIVERSITY
+  EMPLOYER
+  GOVERNMENT
+  OTHER
+}
+
+model Requester {
+  id         String        @id @default(uuid())
+  name       String
+  type       RequesterType
+  apiKeyHash String        @unique
+  isActive   Boolean       @default(true)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  permissions Permission[]
+  auditLogs   AuditLog[]
+}
+
+model Permission {
+  id          String    @id @default(uuid())
+  userId      String
+  requesterId String
+  contextId   String
+  grantedAt   DateTime  @default(now())
+  revokedAt   DateTime?
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  requester Requester @relation(fields: [requesterId], references: [id], onDelete: Cascade)
+  context   Context   @relation(fields: [contextId], references: [id])
+
+  @@unique([userId, requesterId, contextId])
+}
+
+enum AuditAction {
+  NAME_RESOLUTION
+  PERMISSION_GRANT
+  PERMISSION_REVOKE
+}
+
+enum AuditResult {
+  SUCCESS
+  DENIED_NO_PERMISSION
+  DENIED_REQUESTER_INACTIVE
+  INVALID_CONTEXT
+  NOT_FOUND
+  ERROR
+}
+
+model AuditLog {
+  id          String      @id @default(uuid())
+  requesterId String?
+  userId      String?
+  contextId   String?
+  identityId  String?
+  action      AuditAction
+  result      AuditResult
+  createdAt   DateTime    @default(now())
+
+  requester Requester? @relation(fields: [requesterId], references: [id], onDelete: SetNull)
+  user      User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  context   Context?   @relation(fields: [contextId], references: [id], onDelete: SetNull)
+  identity  Identity?  @relation(fields: [identityId], references: [id], onDelete: SetNull)
+}
