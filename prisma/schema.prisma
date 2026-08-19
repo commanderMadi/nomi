@@ -161,3 +161,9 @@ model AuditLog {
   context   Context?   @relation(fields: [contextId], references: [id], onDelete: SetNull)
   identity  Identity?  @relation(fields: [identityId], references: [id], onDelete: SetNull)
 }
+
+generator erd {
+  provider      = "prisma-erd-generator"
+  output        = "../docs/ERD.pdf"
+  mermaidConfig = "mermaidConfig.js"
+}
