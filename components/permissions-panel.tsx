@@ -113,7 +113,10 @@ export function PermissionsPanel({
           <select
             className={inputClass}
             value={requesterId}
-            onChange={(e) => setRequesterId(e.target.value)}
+            onChange={(e) => {
+              setRequesterId(e.target.value);
+              setError(null);
+            }}
             required
           >
             <option value="" disabled>
@@ -130,7 +133,10 @@ export function PermissionsPanel({
           <select
             className={inputClass}
             value={context}
-            onChange={(e) => setContext(e.target.value)}
+            onChange={(e) => {
+              setContext(e.target.value);
+              setError(null);
+            }}
             required
           >
             <option value="" disabled>

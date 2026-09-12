@@ -74,6 +74,23 @@ export async function POST(
     return Response.json({ error: "Unknown requester" }, { status: 400 });
   }
 
+  const existing = await prisma.permission.findUnique({
+    where: {
+      userId_requesterId_contextId: {
+        userId: auth.user.id,
+        requesterId: requester.id,
+        contextId: context.id,
+      },
+    },
+  });
+
+  if (existing && existing.revokedAt === null) {
+    return Response.json(
+      { error: `Access for ${requester.name} (${context.name}) is already active` },
+      { status: 409 },
+    );
+  }
+
   // upsert so re-granting a previously revoked permission reactivates it
   const permission = await prisma.permission.upsert({
     where: {
