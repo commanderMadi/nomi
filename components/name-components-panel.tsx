@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ScriptCombobox } from "@/components/script-combobox";
 import { Badge, Button, Card, ErrorText, Field, inputClass } from "@/components/ui";
 import { api, type NameComponent } from "@/lib/client";
 
@@ -72,39 +73,39 @@ export function NameComponentsPanel({
           ))}
         </ul>
       )}
-      <form onSubmit={submit} className="grid gap-3 sm:grid-cols-4">
-        <Field label="Type">
-          <select
-            className={inputClass}
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-          >
-            {COMPONENT_TYPES.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Value">
-          <input
-            className={inputClass}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            required
-          />
-        </Field>
-        <Field label="Script (ISO 15924)">
-          <input
-            className={inputClass}
-            value={script}
-            onChange={(e) => setScript(e.target.value)}
-            pattern="[A-Z][a-z]{3}"
-            required
-          />
-        </Field>
-        <div className="flex items-end">
-          <Button type="submit" disabled={busy}>
+      <form onSubmit={submit} className="grid gap-3 sm:grid-cols-12">
+        <div className="sm:col-span-3">
+          <Field label="Type">
+            <select
+              className={inputClass}
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+            >
+              {COMPONENT_TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </Field>
+        </div>
+        <div className="sm:col-span-3">
+          <Field label="Value">
+            <input
+              className={inputClass}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              required
+            />
+          </Field>
+        </div>
+        <div className="sm:col-span-4">
+          <Field label="Script (ISO 15924)">
+            <ScriptCombobox value={script} onChange={setScript} />
+          </Field>
+        </div>
+        <div className="flex items-end sm:col-span-2">
+          <Button type="submit" disabled={busy} className="w-full">
             Add component
           </Button>
         </div>

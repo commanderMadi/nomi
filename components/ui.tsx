@@ -46,7 +46,7 @@ export function Button({
   return (
     <button
       {...props}
-      className={`rounded-md px-3 py-2 text-sm font-medium transition disabled:opacity-50 ${styles[variant]}`}
+      className={`rounded-md px-3 py-2 text-sm font-medium transition disabled:opacity-50 ${styles[variant]} ${props.className ?? ""}`}
     >
       {children}
     </button>
