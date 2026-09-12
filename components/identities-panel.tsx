@@ -69,6 +69,20 @@ export function IdentitiesPanel({
     setBusy(false);
   }
 
+  async function deleteIdentity(identityId: string) {
+    setBusy(true);
+    setError(null);
+    const res = await api<undefined>(`/users/${userId}/identities/${identityId}`, {
+      method: "DELETE",
+    });
+    if (res.status !== 204) {
+      setError("Could not delete identity");
+    } else {
+      onChanged();
+    }
+    setBusy(false);
+  }
+
   return (
     <Card title="Identities">
       <p className="mb-4 text-sm text-zinc-500">
@@ -81,14 +95,23 @@ export function IdentitiesPanel({
           {identities.map((identity) => (
             <li
               key={identity.id}
-              className="flex flex-wrap items-center gap-2 rounded-md border border-zinc-200 px-3 py-2"
+              className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-zinc-200 px-3 py-2"
             >
-              <span className="text-sm font-semibold text-zinc-900">
-                {displayName(identity.components)}
-              </span>
-              <Badge>{identity.context}</Badge>
-              <span className="text-sm text-zinc-500">{identity.label}</span>
-              {identity.isDefault && <Badge>default</Badge>}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm font-semibold text-zinc-900">
+                  {displayName(identity.components)}
+                </span>
+                <Badge>{identity.context}</Badge>
+                <span className="text-sm text-zinc-500">{identity.label}</span>
+                {identity.isDefault && <Badge>default</Badge>}
+              </div>
+              <Button
+                variant="danger"
+                disabled={busy}
+                onClick={() => deleteIdentity(identity.id)}
+              >
+                Delete
+              </Button>
             </li>
           ))}
         </ul>

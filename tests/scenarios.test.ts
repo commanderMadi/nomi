@@ -429,4 +429,22 @@ describe("account and consent lifecycle", () => {
     assert.ok(actions.includes("NAME_RESOLUTION:SUCCESS"));
     assert.ok(actions.includes("NAME_RESOLUTION:DENIED_NO_PERMISSION"));
   });
+
+  it("deletes an identity and a name component", async () => {
+    const listIdentities = await request("GET", `/api/v1/users/${userId}/identities`, { token });
+    assert.equal(listIdentities.status, 200);
+    const identities = listIdentities.body as unknown as { id: string }[];
+    const identityId = identities[0].id;
+
+    const delIdentity = await request("DELETE", `/api/v1/users/${userId}/identities/${identityId}`, { token });
+    assert.equal(delIdentity.status, 204);
+
+    const listComponents = await request("GET", `/api/v1/users/${userId}/name-components`, { token });
+    assert.equal(listComponents.status, 200);
+    const components = listComponents.body as unknown as { id: string }[];
+    const componentId = components[0].id;
+
+    const delComponent = await request("DELETE", `/api/v1/users/${userId}/name-components/${componentId}`, { token });
+    assert.equal(delComponent.status, 204);
+  });
 });

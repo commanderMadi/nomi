@@ -71,7 +71,9 @@ npm run test:load
 | POST | /api/v1/sessions | Public |
 | POST | /api/v1/requesters | Admin key |
 | GET, POST | /api/v1/users/{id}/name-components | Session (self) |
+| DELETE | /api/v1/users/{id}/name-components/{cid} | Session (self) |
 | GET, POST | /api/v1/users/{id}/identities | Session (self) |
+| DELETE | /api/v1/users/{id}/identities/{iid} | Session (self) |
 | GET, POST | /api/v1/users/{id}/permissions | Session (self) |
 | DELETE | /api/v1/users/{id}/permissions/{pid} | Session (self) |
 | GET | /api/v1/users/{id}/audit | Session (self) |

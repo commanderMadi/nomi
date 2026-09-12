@@ -49,6 +49,21 @@ export function NameComponentsPanel({
     setBusy(false);
   }
 
+  async function deleteComponent(componentId: string) {
+    setBusy(true);
+    setError(null);
+    const res = await api<undefined>(
+      `/users/${userId}/name-components/${componentId}`,
+      { method: "DELETE" },
+    );
+    if (res.status !== 204) {
+      setError("Could not delete name component");
+    } else {
+      onChanged();
+    }
+    setBusy(false);
+  }
+
   return (
     <Card title="Name components">
       <p className="mb-4 text-sm text-zinc-500">
@@ -68,6 +83,15 @@ export function NameComponentsPanel({
               </span>
               <Badge>{c.type}</Badge>
               <Badge>{c.script}</Badge>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => deleteComponent(c.id)}
+                className="ml-1 text-xs text-red-400 hover:text-red-600 disabled:opacity-50"
+                title="Delete component"
+              >
+                ✕
+              </button>
             </li>
           ))}
         </ul>
