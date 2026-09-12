@@ -17,8 +17,32 @@ npx prisma migrate dev
 npx prisma db seed
 npm run dev
 ```
-### IMPORTANT!
-The seed prints fixed demo user ids and development API keys. Seed users log in with the password it prints.
+## Demo Credentials
+
+Running `npx prisma db seed` populates the database with initial test users and requester API keys.
+
+### Seed User Accounts
+All seed users use the password: **`dev-password-only`**
+
+| Name | Email | User ID |
+| --- | --- | --- |
+| Ahmed | `ahmed@example.com` | `00000000-0000-4000-8000-000000000001` |
+| Yuki | `yuki@example.com` | `00000000-0000-4000-8000-000000000002` |
+| Björk | `bjork@example.com` | `00000000-0000-4000-8000-000000000003` |
+| Joko | `joko@example.com` | `00000000-0000-4000-8000-000000000004` |
+| María | `maria@example.com` | `00000000-0000-4000-8000-000000000005` |
+
+### Requester API Keys
+Pass these keys in the `Authorization: Bearer <key>` header (e.g. in `/resolve` or the API):
+
+| Requester | API Key |
+| --- | --- |
+| Hospital | `nomi_dev_hospital` |
+| Employer | `nomi_dev_employer` |
+| University | `nomi_dev_university` |
+| Government | `nomi_dev_government` |
+| Broker | `nomi_dev_broker` |
+
 
 ## Web interface
 
