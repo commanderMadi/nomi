@@ -430,6 +430,21 @@ describe("account and consent lifecycle", () => {
     assert.ok(actions.includes("NAME_RESOLUTION:DENIED_NO_PERMISSION"));
   });
 
+  it("changes the default identity", async () => {
+    const listIdentities = await request("GET", `/api/v1/users/${userId}/identities`, { token });
+    assert.equal(listIdentities.status, 200);
+    const identities = listIdentities.body as unknown as { id: string; isDefault: boolean }[];
+    const nonDefault = identities.find((i) => !i.isDefault);
+    assert.ok(nonDefault);
+
+    const updateRes = await request("PATCH", `/api/v1/users/${userId}/identities/${nonDefault.id}`, {
+      token,
+      body: { isDefault: true },
+    });
+    assert.equal(updateRes.status, 200);
+    assert.equal((updateRes.body as unknown as { isDefault: boolean }).isDefault, true);
+  });
+
   it("deletes an identity and a name component", async () => {
     const listIdentities = await request("GET", `/api/v1/users/${userId}/identities`, { token });
     assert.equal(listIdentities.status, 200);

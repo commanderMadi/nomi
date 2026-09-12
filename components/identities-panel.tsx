@@ -69,6 +69,24 @@ export function IdentitiesPanel({
     setBusy(false);
   }
 
+  async function setDefaultIdentity(identityId: string) {
+    setBusy(true);
+    setError(null);
+    const res = await api<{ error?: string }>(
+      `/users/${userId}/identities/${identityId}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ isDefault: true }),
+      },
+    );
+    if (res.status !== 200) {
+      setError(res.body.error ?? "Could not update default identity");
+    } else {
+      onChanged();
+    }
+    setBusy(false);
+  }
+
   async function deleteIdentity(identityId: string) {
     setBusy(true);
     setError(null);
@@ -95,7 +113,11 @@ export function IdentitiesPanel({
           {identities.map((identity) => (
             <li
               key={identity.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-zinc-200 px-3 py-2"
+              className={`flex flex-wrap items-center justify-between gap-2 rounded-md px-3 py-2 transition-colors ${
+                identity.isDefault
+                  ? "border border-amber-300/80 bg-amber-50/60 shadow-xs"
+                  : "border border-zinc-200 bg-white"
+              }`}
             >
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-sm font-semibold text-zinc-900">
@@ -103,15 +125,31 @@ export function IdentitiesPanel({
                 </span>
                 <Badge>{identity.context}</Badge>
                 <span className="text-sm text-zinc-500">{identity.label}</span>
-                {identity.isDefault && <Badge>default</Badge>}
+                {identity.isDefault && (
+                  <Badge className="border border-amber-300/70 bg-amber-100 text-amber-900 font-semibold">
+                    default
+                  </Badge>
+                )}
               </div>
-              <Button
-                variant="danger"
-                disabled={busy}
-                onClick={() => deleteIdentity(identity.id)}
-              >
-                Delete
-              </Button>
+              <div className="flex items-center gap-2">
+                {!identity.isDefault && (
+                  <Button
+                    variant="secondary"
+                    disabled={busy}
+                    onClick={() => setDefaultIdentity(identity.id)}
+                    className="border-amber-300/80 bg-amber-50 text-amber-900 hover:bg-amber-100 hover:border-amber-400"
+                  >
+                    Set as default
+                  </Button>
+                )}
+                <Button
+                  variant="danger"
+                  disabled={busy}
+                  onClick={() => deleteIdentity(identity.id)}
+                >
+                  Delete
+                </Button>
+              </div>
             </li>
           ))}
         </ul>
