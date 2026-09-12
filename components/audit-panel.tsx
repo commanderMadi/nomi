@@ -23,15 +23,14 @@ export function AuditPanel({
     <Card title="Audit log">
       <div className="mb-4 flex items-center justify-between">
         <p className="text-sm text-zinc-500">
-          Every attempt to resolve your name, and every grant change, is
-          recorded here. Denials included.
+          Log of resolution requests and permission updates.
         </p>
         <Button variant="secondary" onClick={onRefresh}>
           Refresh
         </Button>
       </div>
       {rows.length === 0 ? (
-        <p className="text-sm text-zinc-400">No activity yet.</p>
+        <p className="text-sm text-zinc-400">No activity recorded.</p>
       ) : (
         <table className="w-full text-left text-sm">
           <thead>
@@ -55,8 +54,8 @@ export function AuditPanel({
                 >
                   {row.result}
                 </td>
-                <td className="py-2 pr-4">{row.requester ?? "—"}</td>
-                <td className="py-2">{row.context ?? "—"}</td>
+                <td className="py-2 pr-4">{row.requester ?? "N/A"}</td>
+                <td className="py-2">{row.context ?? "N/A"}</td>
               </tr>
             ))}
           </tbody>

@@ -72,11 +72,10 @@ export function IdentitiesPanel({
   return (
     <Card title="Identities">
       <p className="mb-4 text-sm text-zinc-500">
-        An identity is an ordered arrangement of your components, bound to one
-        context. The order you set here is the order the API serves.
+        Combine and order name components for each context.
       </p>
       {identities.length === 0 ? (
-        <p className="mb-4 text-sm text-zinc-400">No identities yet.</p>
+        <p className="mb-4 text-sm text-zinc-400">No identities created.</p>
       ) : (
         <ul className="mb-6 space-y-2">
           {identities.map((identity) => (
@@ -89,7 +88,7 @@ export function IdentitiesPanel({
               </span>
               <Badge>{identity.context}</Badge>
               <span className="text-sm text-zinc-500">{identity.label}</span>
-              {identity.isDefault && <Badge>default fallback</Badge>}
+              {identity.isDefault && <Badge>default</Badge>}
             </li>
           ))}
         </ul>
@@ -104,7 +103,7 @@ export function IdentitiesPanel({
               required
             >
               <option value="" disabled>
-                Choose a context
+                Select context
               </option>
               {contexts.map((c) => (
                 <option key={c.name} value={c.name}>
@@ -127,13 +126,13 @@ export function IdentitiesPanel({
               checked={isDefault}
               onChange={(e) => setIsDefault(e.target.checked)}
             />
-            Use as default fallback
+            Set as default
           </label>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <p className="mb-2 text-sm font-medium text-zinc-600">
-              Available components (click to add)
+              Available components
             </p>
             <ul className="flex flex-wrap gap-2">
               {available.map((c) => (
@@ -151,10 +150,10 @@ export function IdentitiesPanel({
           </div>
           <div>
             <p className="mb-2 text-sm font-medium text-zinc-600">
-              Assembled name, in order
+              Name component order
             </p>
             {chosen.length === 0 ? (
-              <p className="text-sm text-zinc-400">Nothing selected.</p>
+              <p className="text-sm text-zinc-400">No components selected.</p>
             ) : (
               <ol className="space-y-1">
                 {chosen.map((c, index) => (

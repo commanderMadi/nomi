@@ -63,11 +63,10 @@ export function PermissionsPanel({
   return (
     <Card title="Access grants">
       <p className="mb-4 text-sm text-zinc-500">
-        A grant lets one organization resolve your name in one context. Revoking
-        takes effect immediately.
+        Manage organization access to your name contexts.
       </p>
       {permissions.length === 0 ? (
-        <p className="mb-4 text-sm text-zinc-400">No grants yet.</p>
+        <p className="mb-4 text-sm text-zinc-400">No active grants.</p>
       ) : (
         <table className="mb-6 w-full text-left text-sm">
           <thead>

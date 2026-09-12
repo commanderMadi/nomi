@@ -46,9 +46,7 @@ export default function ResolvePage() {
         </header>
         <Card title="Resolve a name">
           <p className="mb-4 text-sm text-zinc-500">
-            This is what an organization sees. Present an API key, a user id,
-            and a context; the response depends entirely on what that user has
-            granted to that key.
+            Test name resolution using an organization API key, a user ID, and a context.
           </p>
           <form onSubmit={submit} className="space-y-3">
             <Field label="API key">

@@ -5,8 +5,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-zinc-50 px-6">
       <h1 className="text-4xl font-bold text-zinc-900">Nomi</h1>
       <p className="max-w-md text-center text-zinc-600">
-        Store your name as it actually is, assemble the right version for each
-        context, and control exactly who sees which one.
+        Manage your identity across different contexts and control who can access it.
       </p>
       <div className="flex gap-3">
         <Link

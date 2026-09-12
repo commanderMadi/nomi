@@ -52,11 +52,10 @@ export function NameComponentsPanel({
   return (
     <Card title="Name components">
       <p className="mb-4 text-sm text-zinc-500">
-        Each component is one piece of your name, tagged with its type and
-        script. Components are the building blocks of your identities.
+        Add the individual parts of your name.
       </p>
       {components.length === 0 ? (
-        <p className="mb-4 text-sm text-zinc-400">No components yet.</p>
+        <p className="mb-4 text-sm text-zinc-400">No components added.</p>
       ) : (
         <ul className="mb-4 flex flex-wrap gap-2">
           {components.map((c) => (
