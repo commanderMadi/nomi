@@ -92,6 +92,7 @@ export default function DashboardPage() {
         <NameComponentsPanel
           userId={session.userId}
           components={components}
+          identities={identities}
           onChanged={reload}
         />
         <IdentitiesPanel

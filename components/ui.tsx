@@ -71,3 +71,38 @@ export function Badge({
     </span>
   );
 }
+
+export function Modal({
+  isOpen,
+  onClose,
+  title,
+  children,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
+      <div
+        className="w-full max-w-md rounded-xl border border-zinc-200 bg-white p-6 shadow-xl transition-all"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-zinc-900">{title}</h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-zinc-400 hover:text-zinc-600 text-sm font-medium"
+          >
+            ✕
+          </button>
+        </div>
+        <div>{children}</div>
+      </div>
+    </div>
+  );
+}

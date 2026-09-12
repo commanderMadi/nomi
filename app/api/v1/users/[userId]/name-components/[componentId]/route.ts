@@ -27,8 +27,19 @@ export async function DELETE(
     return Response.json({ error: "Name component not found" }, { status: 404 });
   }
 
-  await prisma.nameComponent.delete({
-    where: { id: component.id },
+  await prisma.$transaction(async (tx) => {
+    // Delete the target name component
+    await tx.nameComponent.delete({
+      where: { id: component.id },
+    });
+
+    // Clean up any identities that have no remaining components left
+    await tx.identity.deleteMany({
+      where: {
+        userId: auth.user.id,
+        components: { none: {} },
+      },
+    });
   });
 
   return new Response(null, { status: 204 });

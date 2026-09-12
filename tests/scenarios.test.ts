@@ -462,4 +462,32 @@ describe("account and consent lifecycle", () => {
     const delComponent = await request("DELETE", `/api/v1/users/${userId}/name-components/${componentId}`, { token });
     assert.equal(delComponent.status, 204);
   });
+
+  it("deletes a name component and automatically cleans up empty identities", async () => {
+    const comp = await request("POST", `/api/v1/users/${userId}/name-components`, {
+      token,
+      body: { type: "NICKNAME", value: "TempComp", script: "Latn" },
+    });
+    assert.equal(comp.status, 201);
+    const compId = comp.body.id as string;
+
+    const ident = await request("POST", `/api/v1/users/${userId}/identities`, {
+      token,
+      body: {
+        context: "financial",
+        label: "Temp Identity",
+        componentIds: [compId],
+      },
+    });
+    assert.equal(ident.status, 201);
+    const identId = ident.body.id as string;
+
+    const delComp = await request("DELETE", `/api/v1/users/${userId}/name-components/${compId}`, { token });
+    assert.equal(delComp.status, 204);
+
+    const listIdentities = await request("GET", `/api/v1/users/${userId}/identities`, { token });
+    assert.equal(listIdentities.status, 200);
+    const remainingIdentities = listIdentities.body as unknown as { id: string }[];
+    assert.equal(remainingIdentities.some((i) => i.id === identId), false);
+  });
 });
