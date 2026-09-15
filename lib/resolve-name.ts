@@ -1,9 +1,7 @@
 import type { Requester } from "@/generated/prisma/client";
 import { AuditAction, AuditResult } from "@/generated/prisma/client";
+import { assembleDisplay } from "@/lib/assembly";
 import { prisma } from "@/lib/prisma";
-
-// CJK scripts don't use spaces between name components
-const UNSPACED_SCRIPTS = new Set(["Jpan", "Hani", "Hans", "Hant"]);
 
 export type ResolutionOutcome =
   | { status: 200; body: ResolvedName }
@@ -101,12 +99,10 @@ export async function resolveName(
     };
   }
 
-  // join components without spaces for CJK scripts (e.g. 山田太郎), with spaces otherwise
+  // assembleDisplay applies the scriptio-continua separator law, 
+  // so names such as 山田太郎 joins without spaces while mixed/Latin names keep them.
   const components = identity.components.map((c) => c.nameComponent);
-  const separator = components.every((c) => UNSPACED_SCRIPTS.has(c.script))
-    ? ""
-    : " ";
-  const display = components.map((c) => c.value).join(separator);
+  const display = assembleDisplay(components);
 
   await audit(AuditResult.SUCCESS, {
     contextId: context.id,

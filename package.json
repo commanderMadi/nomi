@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "tsx --test tests/scenarios.test.ts",
+    "test:properties": "tsx --test tests/assembly.property.test.ts",
     "test:timing": "tsx tests/timing.ts",
     "test:load": "tsx tests/load.ts"
   },
@@ -29,6 +30,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
+    "fast-check": "^4.10.0",
     "prisma": "^7.7.0",
     "prisma-erd-generator": "^2.4.4",
     "tailwindcss": "^4",
