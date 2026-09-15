@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { getScriptInfo } from "@/lib/iso15924";
 import { readJson } from "@/lib/json";
 import { prisma } from "@/lib/prisma";
 import { authenticateSelf } from "@/lib/self";
@@ -16,8 +17,13 @@ const bodySchema = z.object({
     "OTHER",
   ]),
   value: z.string().min(1).max(200),
-  // ISO 15924 script codes are always one uppercase + three lowercase letters (e.g. Latn, Arab)
-  script: z.string().regex(/^[A-Z][a-z]{3}$/, "script must be an ISO 15924 code"),
+  // shape-check first (one uppercase + three lowercase, e.g. Latn), then enforce membership in the real ISO 15924 register
+  script: z
+    .string()
+    .regex(/^[A-Z][a-z]{3}$/, "script must be an ISO 15924 code")
+    .refine((code) => getScriptInfo(code) !== undefined, {
+      message: "unknown ISO 15924 script code",
+    }),
 });
 
 // list all name components for the authenticated user
