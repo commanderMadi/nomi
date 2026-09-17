@@ -1,0 +1,6 @@
+-- AlterEnum
+ALTER TYPE "AuditAction" ADD VALUE 'ACCOUNT_ANONYMIZED';
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "anonymizedAt" TIMESTAMP(3),
+ALTER COLUMN "email" DROP NOT NULL;

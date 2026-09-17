@@ -10,10 +10,13 @@ datasource db {
 // building on top of the erd sketch
 model User {
   id        String   @id @default(uuid())
-  email     String   @unique
+  // nullable so an anonymized account keeps its id but holds no PII
+  email     String?  @unique
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  // set when the account is anonymized; the stub row is purged 30 days later
+  anonymizedAt DateTime?
 
   nameComponents NameComponent[]
   identities     Identity[]
@@ -135,6 +138,7 @@ enum AuditAction {
   NAME_RESOLUTION
   PERMISSION_GRANT
   PERMISSION_REVOKE
+  ACCOUNT_ANONYMIZED
 }
 
 enum AuditResult {

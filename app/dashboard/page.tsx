@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { AuditPanel } from "@/components/audit-panel";
+import { DeleteAccount } from "@/components/delete-account";
 import { IdentitiesPanel } from "@/components/identities-panel";
 import { NameComponentsPanel } from "@/components/name-components-panel";
 import { PermissionsPanel } from "@/components/permissions-panel";
@@ -110,6 +111,7 @@ export default function DashboardPage() {
           onChanged={reload}
         />
         <AuditPanel rows={audit} onRefresh={reload} />
+        <DeleteAccount userId={session.userId} />
       </div>
     </main>
   );

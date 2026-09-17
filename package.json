@@ -11,7 +11,8 @@
     "test": "tsx --test tests/scenarios.test.ts",
     "test:properties": "tsx --test tests/assembly.property.test.ts",
     "test:timing": "tsx tests/timing.ts",
-    "test:load": "tsx tests/load.ts"
+    "test:load": "tsx tests/load.ts",
+    "db:purge": "tsx prisma/purge-anonymized.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.7.0",
