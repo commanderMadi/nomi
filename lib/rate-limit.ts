@@ -1,4 +1,4 @@
-// in-memory fixed-window rate limiter\
+// in-memory fixed-window rate limiter
 
 interface Window {
   count: number;
