@@ -2,11 +2,16 @@ import argon2 from "argon2";
 import { z } from "zod";
 import { readJson } from "@/lib/json";
 import { prisma } from "@/lib/prisma";
+import { clientIp, rateLimit, tooManyRequests } from "@/lib/rate-limit";
 import { generateSessionToken, hashToken } from "@/lib/tokens";
 
 // Standard session time to live in milliseconds (30 days)
 // https://www.obsidiansecurity.com/blog/refresh-token-security-best-practices
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+
+// cap login attempts per client IP to blunt password brute-forcing
+const LOGIN_LIMIT = 10;
+const LOGIN_WINDOW_MS = 60_000;
 
 const bodySchema = z.object({
   email: z.email(),
@@ -17,6 +22,9 @@ const bodySchema = z.object({
 const dummyHash = argon2.hash("nomi.dummy.password.value");
 
 export async function POST(request: Request) {
+  const limit = rateLimit(`login:${clientIp(request)}`, LOGIN_LIMIT, LOGIN_WINDOW_MS);
+  if (!limit.ok) return tooManyRequests(limit);
+
   const parsed = bodySchema.safeParse(await readJson(request));
   if (!parsed.success) {
     return Response.json(

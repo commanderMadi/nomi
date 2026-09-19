@@ -1,7 +1,12 @@
 import { type NextRequest } from "next/server";
 import { z } from "zod";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 import { authenticateRequester } from "@/lib/requester-auth";
 import { resolveName } from "@/lib/resolve-name";
+
+// a requester may resolve at most this many names per minute
+const RESOLVE_LIMIT = 120;
+const RESOLVE_WINDOW_MS = 60_000;
 
 const querySchema = z.object({
   context: z
@@ -26,6 +31,10 @@ export async function GET(
       { status: 401 },
     );
   }
+
+  // throttle each requester independently, by id
+  const limit = rateLimit(`resolve:${requester.id}`, RESOLVE_LIMIT, RESOLVE_WINDOW_MS);
+  if (!limit.ok) return tooManyRequests(limit);
 
   const parsedParams = paramsSchema.safeParse(await params);
   const parsedQuery = querySchema.safeParse(
